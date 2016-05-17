@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	log.Printf("Testing123\n")
+	log.Printf("Starting ToDo server\n")
 	router := NewRouter()
 	log.Fatal(http.ListenAndServe(":60321", router))
 }
