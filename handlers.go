@@ -7,9 +7,9 @@ import (
 )
 
 type todoEntry struct {
-	Title       string `json:title`
-	DueDate     string `json:date_due`
-	Description string `json:description`
+	Title       string `json:"title"`
+	DueDate     string `json:"date_due"`
+	Description string `json:"description"`
 }
 
 func TodoEntries(w http.ResponseWriter, r *http.Request) {
@@ -30,8 +30,8 @@ func getTodoItems() []todoEntry {
 		todoEntry{
 			Title:   "Work on Todo List Server",
 			DueDate: "2016-05-17T23:59:59-08:00",
-			Description: `Give the Todo App functionality
-							to query from the server`,
+			Description: "Give the Todo App functionality " +
+				"to query from the server",
 		},
 		todoEntry{
 			Title:       "Finish Work on Todo List UI",
