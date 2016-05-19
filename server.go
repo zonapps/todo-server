@@ -7,6 +7,7 @@ import (
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/rs/cors"
 )
 
 var DatabaseConnection *sql.DB
@@ -24,7 +25,9 @@ func main() {
 		log.Fatalf("Error connecting to %s: %s\n", dbFile, err.Error())
 	}
 	router := NewRouter()
-	log.Fatal(http.ListenAndServe(":60321", router))
+
+	handler := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":60321", handler))
 }
 
 func ConnectToSqlite(dbFile string) error {
