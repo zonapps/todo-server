@@ -11,7 +11,7 @@ import (
 var DatabaseConnection *sql.DB
 
 func main() {
-	log.Printf("Testing123\n")
+	log.Printf("Starting server on port 60321\n")
 
 	err := ConnectToSqlite("/todo.db")
 	if err != nil {

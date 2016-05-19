@@ -11,9 +11,9 @@ import (
 )
 
 type todoEntry struct {
-	Title       string `json:title`
-	DueDate     string `json:date_due`
-	Description string `json:description`
+	Title       string `json:"title"`
+	DueDate     string `json:"date_due"`
+	Description string `json:"description"`
 }
 
 func TodoEntries(w http.ResponseWriter, r *http.Request) {
