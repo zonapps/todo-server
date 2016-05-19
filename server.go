@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -11,11 +12,16 @@ import (
 var DatabaseConnection *sql.DB
 
 func main() {
-	log.Printf("Starting server on port 60321\n")
+	dbFile := "/todo.db"
 
-	err := ConnectToSqlite("/todo.db")
+	if len(os.Args) > 1 {
+		dbFile = os.Args[1]
+	}
+	log.Printf("Starting server on port 60321, sqlite DB file: %s\n", dbFile)
+
+	err := ConnectToSqlite(dbFile)
 	if err != nil {
-		log.Fatalf("Error connecting to /todo.db: %s\n", err.Error())
+		log.Fatalf("Error connecting to %s: %s\n", dbFile, err.Error())
 	}
 	router := NewRouter()
 	log.Fatal(http.ListenAndServe(":60321", router))
