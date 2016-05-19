@@ -1,15 +1,19 @@
 package main
 
 import (
+	"log"
 	"net/http"
+	"time"
 
 	"encoding/json"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type todoEntry struct {
-	Title       string `json:"title"`
-	DueDate     string `json:"date_due"`
-	Description string `json:"description"`
+	Title       string `json:title`
+	DueDate     string `json:date_due`
+	Description string `json:description`
 }
 
 func TodoEntries(w http.ResponseWriter, r *http.Request) {
@@ -26,22 +30,27 @@ func TodoEntries(w http.ResponseWriter, r *http.Request) {
 }
 
 func getTodoItems() []todoEntry {
-	return []todoEntry{
-		todoEntry{
-			Title:   "Work on Todo List Server",
-			DueDate: "2016-05-17T23:59:59-08:00",
-			Description: "Give the Todo App functionality " +
-				"to query from the server",
-		},
-		todoEntry{
-			Title:       "Finish Work on Todo List UI",
-			DueDate:     "2016-05-15T23:59:59-08:00",
-			Description: `This is overdue man....`,
-		},
-		todoEntry{
-			Title:       "Get new house",
-			DueDate:     "2016-05-31T12:00:00-08:00",
-			Description: `So excited man`,
-		},
+	rows, err := DatabaseConnection.Query("SELECT title,description,date_due from todo_item")
+	if err != nil {
+		log.Printf("Error querying rows: %s\n", err.Error())
+		return nil
 	}
+
+	var entries []todoEntry
+	var entry todoEntry
+	var unixTime int64 = 0
+	for rows.Next() {
+		err = rows.Scan(&entry.Title, &entry.Description, &unixTime)
+		if err != nil {
+			log.Printf("Error scanning row: %s\n", err.Error())
+			return entries
+		}
+		tm := time.Unix(unixTime, 0)
+		date := tm.Format("2006-01-_2T15:04:05-08:00")
+		entry.DueDate = date
+		entries = append(entries, entry)
+
+	}
+
+	return entries
 }

@@ -1,15 +1,34 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 
-	"github.com/rs/cors"
+	_ "github.com/mattn/go-sqlite3"
 )
 
+var DatabaseConnection *sql.DB
+
 func main() {
-	log.Printf("Starting ToDo server\n")
+	log.Printf("Testing123\n")
+
+	err := ConnectToSqlite("/todo.db")
+	if err != nil {
+		log.Fatalf("Error connecting to /todo.db: %s\n", err.Error())
+	}
 	router := NewRouter()
-	handler := cors.Default().Handler(router)
-	log.Fatal(http.ListenAndServe(":60321", handler))
+	log.Fatal(http.ListenAndServe(":60321", router))
+}
+
+func ConnectToSqlite(dbFile string) error {
+	if DatabaseConnection != nil {
+		DatabaseConnection.Close()
+		DatabaseConnection = nil
+	}
+
+	var err error
+
+	DatabaseConnection, err = sql.Open("sqlite3", dbFile)
+	return err
 }
